@@ -1,22 +1,20 @@
-var fs = require('fs')
-var temp = process.argv[2];
-var stream = fs.createReadStream(temp);
-var file = ''; 
+var fs = require('fs'); 
+var nameFile = process.argv[2];
+var readFile = fs.createReadStream(nameFile); 
+var writeFile = fs.createWriteStream('tempMayus.txt');
 
-stream.on('data', function(data) {
-	var data = data.toString();
-	for (var i = 0; i < data.length; i++) {		
-		if (["a", "e", "i", "o", "u"].indexOf(data[i]) !== -1){
-			file += data[i].toUpperCase();
+readFile.setEncoding('utf8');
+
+readFile.on('data', function(chunk) { 
+	for (var i = 0; i < chunk.length; i++) {		
+		if (["a", "e", "i", "o", "u"].indexOf(chunk[i]) !== -1){
+			writeFile.write(chunk[i].toUpperCase());
 		} else{
-			file += data[i];
+			writeFile.write(chunk[i]);
 		};
 	};
 });
 
-stream.on('end', function() {
-	fs.writeFile('tempMayus.txt', file, function (err) {
-	if (err) throw err;
-		console.log('It\'s saved!');
-	});
+readFile.on('end', function() { 
+  console.log("Successfully received data");
 });
